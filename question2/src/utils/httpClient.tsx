@@ -3,30 +3,41 @@ import 'cross-fetch/polyfill';
 
 //
 const getData = async (url: string, headers: any): Promise<any> => {
-  //
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers,
-    },
-  });
+  let lastError;
+  const maxRetries = 3;
 
   //
-  if (response.status === 401) {
-    throw new Error('REQUEST_ERROR_UNAUTHORIZED');
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      //
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+      });
+
+      //
+      if (response.status === 401) {
+        throw new Error('REQUEST_ERROR_UNAUTHORIZED');
+      }
+
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error('REQUEST_ERROR_NETWORK_FAILED');
+      }
+      // Parse the response as JSON and return the data
+      const data = await response.json();
+
+      //
+      return data;
+    } catch (error) {
+      lastError = error;
+    }
   }
-
-  // Check if the response is successful
-  if (!response.ok) {
-    throw new Error('REQUEST_ERROR_NETWORK_FAILED');
-  }
-  // Parse the response as JSON and return the data
-  const data = await response.json();
-
-  //
-  return data;
-
+  // @Todo: Send Error to Tracker (e.g. sentry)
+  throw lastError;
 };
 
 //

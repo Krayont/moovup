@@ -14,13 +14,18 @@ import UsersPage from './pages/users';
 
 //
 const router = createBrowserRouter([
+  // {
+  //   path: "/",
+  //   element: <div>Hello world!</div>,
+  //   errorElement: <ErrorPage />,
+  // },
   {
-    path: "/",
-    element: <div>Hello world!</div>,
+    path: "/users",
+    element: <UsersPage />,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/users",
+    path: "*",
     element: <UsersPage />,
     errorElement: <ErrorPage />,
   },
@@ -38,6 +43,7 @@ const App = () => {
       <Box
         sx={{
           width: '80vw',
+          maxWidth: '1024px',
           minHeight: '100vh',
           margin: '0 auto',
           backgroundColor: 'rgba(243, 246, 249)',

@@ -10,7 +10,9 @@ import {
   Divider,
   Typography,
   Snackbar,
-  Alert
+  Alert,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 
 //
@@ -45,6 +47,9 @@ const UsersList = () => {
   const [showDetailPage, setShowDetailPage] = useState(false);
 
   //
+  const [showActiveUsers, setShowActiveUsers] = useState(false);
+
+  //
   useEffect(() => {
     //
     (async () => {
@@ -62,10 +67,8 @@ const UsersList = () => {
       } catch (error) {
         setIsError(true);
         setErrorMessage('Failed to retrieve user data, Please try again later.');
-
         setUsers([]);
 
-        // @TODO: Send Error to Tracker (e.g. sentry)
       } finally {
         setIsLoading(false);
       }
@@ -111,6 +114,9 @@ const UsersList = () => {
       haveValidCoordinates = true;
     }
 
+    if (!showActiveUsers && !haveValidCoordinates) {
+      return <></>
+    }
     //
     return (
       <ListItem
@@ -159,9 +165,6 @@ const UsersList = () => {
       {/*  */}
       <Loader
         open={isLoading}
-        onClick={() => {
-          // setIsLoading(false);
-        }}
       />
 
       {/* Error */}
@@ -195,7 +198,6 @@ const UsersList = () => {
       >
         <Typography
           variant="h4"
-          // gutterBottom
           sx={{
             height: '64px',
           }}
@@ -205,6 +207,22 @@ const UsersList = () => {
 
         <Divider />
       </Box>
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          mt: 2,
+        }}
+      >
+        <FormControlLabel
+          control={<Switch />}
+          onChange={() => setShowActiveUsers(!showActiveUsers)}
+          label="Show All Users"
+        />
+      </Box>
+
 
       {/*  */}
       {!showDetailPage && (
